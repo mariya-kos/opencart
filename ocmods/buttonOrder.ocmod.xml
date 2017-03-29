@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Изменение кнопки при отсутсвии товара</name>
+    <version>1.0</version>
+    <code>opencart_2</code>
+    <author>OpenCart Ltd</author>
+    <link>http://www.opencart.com</link>
+    <file path="catalog\controller\product\product.php">
+        <operation>
+            <search><![CDATA[
+            $data['stock'] = $product_info['stock_status'];
+            ]]></search>
+            <add position="after"><![CDATA[
+            $data['button_cart'] = 'Под заказ';
+            ]]></add>
+        </operation>
+    </file>
+</modification>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Добавление импортера в карточку товара</name>
+    <version>1.0</version>
+    <code>opencart_1</code>
+    <author>OpenCart Ltd</author>
+    <link>http://www.opencart.com</link>
+    <file path="catalog\view\theme\default\template\product\product.tpl">
+        <operation>
+            <search><![CDATA[
+            <li><?php echo $text_stock; ?> <?php echo $stock; ?></li>
+            ]]></search>
+            // add - position - что требуется сделать
+            <add position="after"><![CDATA[
+            <li>Импортер: "ООО Квашня"</li>
+            ]]></add>
+        </operation>
+    </file>
+</modification>
