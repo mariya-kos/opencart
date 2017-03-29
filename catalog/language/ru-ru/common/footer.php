@@ -6,6 +6,7 @@ $_['text_extra']        = 'Дополнительно';
 $_['text_contact']      = 'Связаться с нами';
 $_['text_return']       = 'Возврат товара';
 $_['text_sitemap']      = 'Карта сайта';
+$_['text_promotions']   = 'Товар дня';
 $_['text_manufacturer'] = 'Производители';
 $_['text_voucher']      = 'Подарочные сертификаты';
 $_['text_affiliate']    = 'Партнёры';
