@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Добавление кнопки "One click"</name>
+    <version>1.0</version>
+    <code>opencart_3</code>
+    <author>OpenCart Ltd</author>
+    <link>http://www.opencart.com</link>
+    <file path="catalog\controller\product\product.php">
+        <operation>
+            <search><![CDATA[
+                public function getRecurringDescription()
+            ]]></search>
+            <add position="before"><![CDATA[
+    public function process1Click()
+    {
+        $this->load->language('checkout/cart');
+
+		if (isset($this->request->post['product_id'])) {
+			$product_id = (int)$this->request->post['product_id'];
+		} else {
+			$product_id = 0;
+		}
+
+		$this->load->model('catalog/product');
+
+		$product_info = $this->model_catalog_product->getProduct($product_id);
+
+        $email_to = "somewhere@example.com";
+        $mail = new Mail();
+
+        $mail->protocol = $this->config->get('config_mail_protocol');
+        $mail->parameter = $this->config->get('config_mail_parameter');
+        $mail->hostname = $this->config->get('config_smtp_host');
+        $mail->username = $this->config->get('config_smtp_username');
+        $mail->password = $this->config->get('config_smtp_password');
+        $mail->port = $this->config->get('config_smtp_port');
+        $mail->timeout = $this->config->get('config_smtp_timeout');
+        $mail->setTo($email_to);
+        $mail->setFrom('somewhere@example.com');
+        $mail->setSender('somewhere@example.com');
+        $mail->setSubject('test send mail');
+        $mail->setText(http_build_query($product_info, '', chr(10)));
+
+        $mail->send();
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($product_info));
+    }
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/view/theme/default/template/product/product.tpl">
+        <operation>
+            <search><![CDATA[
+                <button type="button" id="button-cart" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary btn-lg btn-block"><?php echo $button_cart; ?></button>
+            ]]></search>
+            <add position="before"><![CDATA[
+    <br />
+    <button type="button" id="button-1click" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-default btn-lg btn-block">Купить в 1 клик</button>
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/view/theme/default/template/product/product.tpl">
+        <operation>
+            <search><![CDATA[
+                $('#button-cart').on('click', function() {
+            ]]></search>
+            <add position="before"><![CDATA[
+$('#button-1click').on('click', function() {
+	$.ajax({
+		url: 'index.php?route=product/product/process1Click',
+		type: 'post',
+		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+		dataType: 'json',
+		beforeSend: function() {
+			$('#button-cart').button('loading');
+		},
+		complete: function() {
+			$('#button-cart').button('reset');
+		},
+		success: function(json) {
+		    console.log(json);
+		    if (json['quantity'] != '0') {
+                $('.breadcrumb').after('<div class="alert alert-success">Ваш запрос отправлен! Спасибо за покупку.</button></div>');
+            } else {
+                $('.breadcrumb').after('<div class="alert alert-success">Отправлен запрос на предзаказ! Спасибо.</button></div>');
+            }
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+		},
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+	});
+});
+            ]]></add>
+        </operation>
+    </file>
+</modification>

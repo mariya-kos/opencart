@@ -10,7 +10,6 @@
             <search><![CDATA[
             <li><?php echo $text_stock; ?> <?php echo $stock; ?></li>
             ]]></search>
-            // add - position - что требуется сделать
             <add position="after"><![CDATA[
             <li>Импортер: "ООО Квашня"</li>
             ]]></add>
